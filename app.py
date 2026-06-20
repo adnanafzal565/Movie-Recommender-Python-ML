@@ -14,7 +14,11 @@ similarity = joblib.load("similarity.pkl")
 def home():
     return { "message": "Movie recommender running." }
 
-def recommend(title: str):
+@app.post("/recommend")
+def get_recommendations(request: Recommendation):
+
+    title = request.title
+
     if title not in data["title"].values:
         return []
 
@@ -35,15 +39,9 @@ def recommend(title: str):
         recommendations.append(movie_title)
 
         if (len(recommendations) == 5):
-            break
-
-    return recommendations
-
-@app.post("/recommend")
-def get_recommendations(request: Recommendation):
-    results = recommend(request.title)
+            break 
 
     return {
         "movie": request.title,
-        "recommendations": results
+        "recommendations": recommendations
     }
